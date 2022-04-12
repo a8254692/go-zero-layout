@@ -1,0 +1,3 @@
+[submodule "api/back-common-protocol"]
+	path = api/back-common-protocol
+	url = git@yw-gitlab.miniworldplus.com:mini-educate/sirius/back-common-protocol.git

@@ -1,0 +1,68 @@
+Name: rpcuserbehavior.rpc
+
+Mode: dev   #服务环境，dev-开发环境，test-测试环境，pre-预发环境，pro-正式环境
+
+ListenOn: 0.0.0.0:8080
+
+Etcd:
+  Hosts:
+#    - 127.0.0.1:2379
+    - 10.0.0.106:2379
+  Key: /sirius-go/rpcuserbehavior.rpc
+
+#日志配置
+Log:
+  ServiceName: rpc_user_behavior   #日志名称
+  Mode: console                        #日志方式  console|file|volume
+  Path: logs/rpc_user_behavior     #日志文件路径
+  Level: info                       #错误级别才写入 info|error|severe
+  Compress: false                   #是否开启gzip压缩
+  KeepDays: 30                      #日志保留天数
+
+#Logrus日志配置
+Logrus:
+  ServiceName: rpc_user_behavior_logrus     #日志名称
+  Path: logs/rpc_user_behavior_logrus       #日志文件路径
+  Level: 6                          #错误级别才写入 Error:2|Warn:3|Info:4|Debug:5|Trace:6
+  RotationTime: 1                   #日志切割间隔天数
+  KeepDays: 30                      #日志保留天数
+
+#Redis:
+#  - Host: 10.0.0.106
+#    Pass: 6379
+#    Type: node
+
+Mysql:
+  Datasource: root:123456@tcp(10.0.0.106:3306)/sirius?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+
+RedisConn:
+  Address: 10.0.0.106:6379
+  Pwd:
+  Db: 4
+
+Mongo:
+  Datasource: mongodb://10.0.0.106:27017/sharedb_test
+
+Rmq:
+  User: root
+  Pwd: "123456"
+  Host: 10.0.0.106
+  Port: 5672
+
+CommentRmqMsgQ:
+  QuName: sir@userBehaviorComment
+  RtKey:
+  ExName:
+  ExType:
+
+SendMessageRmqQ:
+  QuName: sir@sendMessage
+  RtKey:
+  ExName:
+  ExType:
+
+AddFocusRmqQ:
+  QuName: sir@addFocus
+  RtKey:
+  ExName:
+  ExType:

@@ -1,0 +1,257 @@
+version: "3.8"
+services:
+  rpc_integrate_shop:
+    image: ${rpcIntegrateShopImage}
+    deploy:
+      mode: replicated
+      replicas: ${rpcIntegrateShopReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internal==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    volumes:
+      - logs:/app/logs
+    networks:
+      - etcd
+    command: [ "./integrateshop", "-f", "etc/integrateshop${env}.yaml" ]
+
+  api_integrate_shop:
+    image: ${apiIntegrateShopImage}
+    deploy:
+      mode: replicated
+      replicas: ${apiIntegrateShopReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internet==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    ports:
+      - "8888:8888"
+    volumes:
+      - logs:/app/logs
+    networks:
+      - etcd
+    command: [ "./server", "-f", "etc/server-api${env}.yaml" ]
+
+  rpc_user_behavior:
+    image: ${rpcUserBehaviorImage}
+    deploy:
+      mode: replicated
+      replicas: ${rpcUserBehaviorReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internal==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    volumes:
+      - logs:/app/logs
+    networks:
+      - etcd
+    command: [ "./rpcuserbehavior", "-f", "etc/rpcuserbehavior${env}.yaml" ]
+
+  api_user_behavior:
+    image: ${apiUserBehaviorImage}
+    deploy:
+      mode: replicated
+      replicas: ${apiUserBehaviorReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internet==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    ports:
+      - "8889:8888"
+    volumes:
+      - logs:/app/logs
+    networks:
+      - etcd
+    command: [ "./apiuserbehavior", "-f", "etc/apiuserbehavior${env}.yaml" ]
+
+  rpc_cube:
+    image: ${rpcCubeImage}
+    deploy:
+      mode: replicated
+      replicas: ${rpcCubeReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internal==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    volumes:
+      - logs:/app/logs
+    networks:
+      - etcd
+    command: [ "./rpc_cube", "-f", "etc/rpccube${env}.yaml" ]
+
+  api_cube:
+    image: ${apiCubeImage}
+    deploy:
+      mode: replicated
+      replicas: ${apiCubeReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internet==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    ports:
+      - "8881:8888"
+    volumes:
+      - logs:/app/logs
+    networks:
+      - etcd
+    command: [ "./api_cube", "-f", "etc/cubeapi${env}.yaml" ]
+
+  app_crontab:
+    image: ${appCrontabImage}
+    deploy:
+      mode: replicated
+      replicas: ${appCrontabReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internet==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    volumes:
+      - logs:/app/logs
+    command: [ "./main", "-f", "etc/crontab${env}.yaml" ]
+
+  admin_crontab:
+    image: ${adminCrontabImage}
+    deploy:
+      mode: replicated
+      replicas: ${adminCrontabReplicas}
+      resources:
+        limits:
+          cpus: "2"
+          memory: 300M
+
+      placement:
+        constraints:
+          - node.labels.sirius-go-internet==all
+
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+        max_attempts: 6
+
+      update_config:
+        parallelism: 2
+        delay: 5s
+        order: start-first
+
+    volumes:
+      - logs:/app/logs
+    command: [ "./main", "-f", "etc/crontab${env}.yaml" ]
+
+networks:
+  etcd:
+    external: true
+volumes:
+  logs:
